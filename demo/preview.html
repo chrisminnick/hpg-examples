@@ -1,0 +1,137 @@
+
+<!doctype html>
+<html>
+<head>
+<title>Hip Pocket Guide to HTML 5.1 Demo Viewer</title>
+<meta charset="utf-8"/>
+
+
+<link rel=stylesheet href=../lib/codemirror.css>
+<script src="../js/jquery-3.2.1.min.js"></script>
+<script src=../lib/codemirror.js></script>
+<script src=../mode/xml/xml.js></script>
+<script src=../mode/javascript/javascript.js></script>
+<script src=../mode/css/css.js></script>
+<script src=../mode/htmlmixed/htmlmixed.js></script>
+<style type=text/css>
+  .CodeMirror {
+    float: left;
+    width: 400px;
+    border: 1px solid black;
+  }
+  iframe {
+    width: 400px;
+    float: left;
+    height: 300px;
+    border: 1px solid black;
+    border-left: 0px;
+  }
+  #code{
+    display:none;
+  }
+  nav#mainnav {
+    width: 300px;
+    height: 300px;
+
+    float: left;
+  }
+</style>
+
+<script>
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+ 
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+ 
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
+
+$(document).ready(function(){
+  var example = getUrlParameter('example');
+  if (!example) {
+      example = 'default';
+  }
+    $.get('example/' + example + '.html', function (data) {
+      $("textarea#code").val(data);
+      document.getElementById("code").innerHTML = data;
+      initialize(data);
+    });
+
+});
+
+</script>
+</head>
+<body>
+<nav id="mainnav">
+  <ul>
+    <li>Chapter 3
+      <ul>
+        <li><a href="preview.html?example=03doctype">doctype</a></li>
+        <li><a href="preview.html?example=03address">address</a></li>
+        <li><a href="preview.html?example=03article">article</a></li>
+        <li><a href="preview.html?example=03aside">aside</a></li>
+        <li><a href="preview.html?example=03body">body</a></li>
+        <li><a href="preview.html?example=03div">div</a></li>
+        <li><a href="preview.html?example=03footer">footer</a></li>
+        <li><a href="preview.html?example=03h">h1 - h6</a></li>
+        <li><a href="preview.html?example=03footer">footer</a></li>
+        <li><a href="preview.html?example=03head">head</a></li>
+        <li><a href="preview.html?example=03header">header</a></li>
+        <li><a href="preview.html?example=03hgroup">hgroup</a></li>
+        <li><a href="preview.html?example=03html">html</a></li>
+        <li><a href="preview.html?example=03main">main</a></li>
+        <li><a href="preview.html?example=03meta">meta</a></li>
+        <li><a href="preview.html?example=03nav">nav</a></li>
+        <li><a href="preview.html?example=03section">section</a></li>
+        <li><a href="preview.html?example=03span">span</a></li>
+        <li><a href="preview.html?example=03title">title</a></li>
+        <li><a href="preview.html?example=03comments">comments</a></li>
+
+      </ul>
+    </li>
+  </ul>
+
+</nav>
+
+<article>
+  <h2>HTML5 preview</h2>
+
+  <textarea id="code" name="code"></textarea>
+  <iframe id=preview></iframe>
+  
+</article>
+<script>
+  function initialize(data) {
+    var delay;
+    // Initialize CodeMirror editor with a nice html5 canvas demo.
+    var editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+      mode: 'text/html',
+      value: data
+    });
+
+    editor.on("change", function () {
+      updatePreview();
+      /*clearTimeout(delay);
+      delay = setTimeout(updatePreview, 300);*/
+    });
+
+    function updatePreview() {
+      var previewFrame = document.getElementById('preview');
+      var preview =  previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+      preview.open();
+      preview.write(editor.getValue());
+      preview.close();
+    }
+    //setTimeout(updatePreview, 300);
+    updatePreview();
+  }
+  </script>
+</body>
+</html>
